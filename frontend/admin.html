@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCHEMEWISE — Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="app-layout" id="appLayout">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">
+  <img src="images/emblem.png" alt="Emblem" style="width:30px;height:30px;object-fit:contain;" />
+</div>
+      <div class="brand-text">
+        <div class="brand-name">SCHEMEWISE</div>
+        <div class="brand-sub">Admin Portal</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main Menu</div>
+      <div class="nav-item active" onclick="showSection('dashboard', this)">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showSection('beneficiaries', this)">
+        <span class="nav-icon">👥</span> Beneficiaries
+      </div>
+      <div class="nav-item" onclick="showSection('schemes', this)">
+        <span class="nav-icon">📋</span> Schemes
+      </div>
+
+      <div class="nav-section-label">Monitoring</div>
+      <div class="nav-item" onclick="showSection('compliance', this)">
+        <span class="nav-icon">⚠️</span> Compliance Alerts
+      </div>
+      <div class="nav-item" onclick="showSection('audit', this)">
+        <span class="nav-icon">📝</span> Audit Logs
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" onclick="logout()">
+        <div class="user-avatar" id="userAvatar">A</div>
+        <div>
+          <div class="user-name" id="sidebarUsername">Admin</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ─────────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="header-title" id="pageHeading">Dashboard Overview</div>
+        <span class="header-badge">Admin</span>
+      </div>
+      <div class="header-right" style="position:relative;">
+        <button class="notif-btn" onclick="toggleNotif()" id="notifBtn">
+          🔔
+          <span class="notif-badge" id="notifCount">0</span>
+        </button>
+        <button class="dark-toggle" onclick="toggleDark()" id="darkBtn">🌙</button>
+
+        <!-- Notification dropdown -->
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-header-row">
+            Notifications
+            <span id="notifCountLabel" style="font-weight:400;font-size:.8rem;color:var(--text-muted)">0 alerts</span>
+          </div>
+          <div id="notifList">
+            <div class="notif-item">
+              <div class="notif-dot info"></div>
+              <div>Loading notifications…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tricolor strip -->
+    <div class="tricolor-strip"></div>
+
+    <!-- Page Body -->
+    <div class="page-body">
+
+      <!-- ── DASHBOARD SECTION ──────────────────────────── -->
+      <div class="section active" id="section-dashboard">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Dashboard Overview</div>
+            <div class="page-subtitle">Real-time welfare scheme monitoring and analytics</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="refreshDashboard()">🔄 Refresh</button>
+        </div>
+
+        <!-- Stats grid -->
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card card-blue">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+              <div class="stat-value skeleton sk-line narrow" id="stat-beneficiaries" style="width:60px;height:32px;"></div>
+              <div class="stat-label">Total Beneficiaries</div>
+              <div class="stat-trend">↑ Active in system</div>
+            </div>
+          </div>
+          <div class="stat-card card-green">
+            <div class="stat-icon">📋</div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-schemes">—</div>
+              <div class="stat-label">Active Schemes</div>
+              <div class="stat-trend">Operational</div>
+            </div>
+          </div>
+          <div class="stat-card card-red">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-alerts">—</div>
+              <div class="stat-label">Duplicate Alerts</div>
+              <div class="stat-trend" style="color:var(--danger)">Requires review</div>
+            </div>
+          </div>
+          <div class="stat-card card-orange">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-enrollments">—</div>
+              <div class="stat-label">Active Enrollments</div>
+              <div class="stat-trend">
+                <span class="status-dot online"></span> System Operational
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-title">Scheme Distribution</div>
+            <div class="chart-subtitle">Enrollment spread across schemes</div>
+            <div class="chart-canvas-wrap">
+              <canvas id="pieChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Beneficiary Enrollment by Scheme</div>
+            <div class="chart-subtitle">Total vs active enrollments</div>
+            <div class="chart-canvas-wrap">
+              <canvas id="barChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BENEFICIARIES SECTION ────────────────────── -->
+      <div class="section" id="section-beneficiaries">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Beneficiary Management</div>
+            <div class="page-subtitle">Add, view and enroll beneficiaries into welfare schemes</div>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="openModal('addBenModal')">➕ Add Beneficiary</button>
+            <button class="btn btn-secondary" onclick="openModal('enrollModal')">🔗 Enroll</button>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">All Beneficiaries</div>
+            <input type="text" class="table-search" placeholder="Search name or Aadhaar…" oninput="filterTable('benTable', this.value)" />
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" id="benTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Full Name</th>
+                  <th>Aadhaar Number</th>
+                  <th>Annual Income</th>
+                  <th>Type</th>
+                  <th>Enrollments</th>
+                  <th>Registered On</th>
+                </tr>
+              </thead>
+              <tbody id="benTableBody">
+                <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading data…</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <span id="benCount">Loading…</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SCHEMES SECTION ──────────────────────────── -->
+      <div class="section" id="section-schemes">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Welfare Schemes</div>
+            <div class="page-subtitle">Government schemes currently active in the system</div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">All Schemes</div>
+            <input type="text" class="table-search" placeholder="Search schemes…" oninput="filterTable('schemeTable', this.value)" />
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" id="schemeTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Scheme Name</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Enrolled</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody id="schemeTableBody">
+                <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading data…</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COMPLIANCE SECTION ───────────────────────── -->
+      <div class="section" id="section-compliance">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Compliance Alerts</div>
+            <div class="page-subtitle">Detected irregularities requiring administrative review</div>
+          </div>
+        </div>
+
+        <div class="alert-strip danger">
+          ⚠️ <strong>Attention:</strong> All flagged alerts require manual review within 72 hours per ministry guidelines.
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">Compliance Issues</div>
+            <input type="text" class="table-search" placeholder="Search alerts…" oninput="filterTable('alertTable', this.value)" />
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" id="alertTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Beneficiary</th>
+                  <th>Aadhaar</th>
+                  <th>Scheme</th>
+                  <th>Alert Type</th>
+                  <th>Detected On</th>
+                </tr>
+              </thead>
+              <tbody id="alertTableBody">
+                <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading alerts…</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── AUDIT LOG SECTION ────────────────────────── -->
+      <div class="section" id="section-audit">
+        <div class="page-header">
+          <div>
+            <div class="page-title">System Audit Log</div>
+            <div class="page-subtitle">Complete record of system activities and user actions</div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">Audit Trail</div>
+            <input type="text" class="table-search" placeholder="Search logs…" oninput="filterTable('auditTable', this.value)" />
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" id="auditTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Action</th>
+                  <th>User</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableBody">
+                <tr><td colspan="4"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading audit log…</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end page-body -->
+  </main>
+</div>
+
+<!-- ── MODAL: Add Beneficiary ───────────────────────────── -->
+<div class="modal-overlay" id="addBenModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">➕ Add New Beneficiary</div>
+      <button class="modal-close" onclick="closeModal('addBenModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="error-msg" id="addBenError"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" id="ben-name" type="text" placeholder="Enter full name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Aadhaar Number</label>
+          <input class="form-input" id="ben-aadhaar" type="text" placeholder="12-digit Aadhaar" maxlength="12" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Annual Income (₹)</label>
+          <input class="form-input" id="ben-income" type="number" placeholder="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Beneficiary Type</label>
+          <select class="form-select" id="ben-type">
+            <option value="BPL">BPL (Below Poverty Line)</option>
+            <option value="APL">APL (Above Poverty Line)</option>
+            <option value="AAY">AAY (Antyodaya Anna Yojana)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('addBenModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAddBeneficiary()">Add Beneficiary</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Enroll Beneficiary ────────────────────────── -->
+<div class="modal-overlay" id="enrollModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🔗 Enroll Beneficiary in Scheme</div>
+      <button class="modal-close" onclick="closeModal('enrollModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="error-msg" id="enrollError"></div>
+      <div class="form-group">
+        <label class="form-label">Select Beneficiary</label>
+        <select class="form-select" id="enroll-ben">
+          <option value="">-- Select Beneficiary --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Select Scheme</label>
+        <select class="form-select" id="enroll-scheme">
+          <option value="">-- Select Scheme --</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('enrollModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitEnrollment()">Enroll Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/beneficiaries.js"></script>
+</body>
+</html>

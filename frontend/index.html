@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCHEMEWISE — Public Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">
+  <img src="images/emblem.png" alt="Emblem" style="width:30px;height:30px;object-fit:contain;" />
+</div>
+      <div class="brand-text">
+        <div class="brand-name">SCHEMEWISE</div>
+        <div class="brand-sub">Public Portal</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Navigation</div>
+      <div class="nav-item active" onclick="showSection('overview', this)">
+        <span class="nav-icon">📊</span> Overview
+      </div>
+      <div class="nav-item" onclick="showSection('schemes', this)">
+        <span class="nav-icon">📋</span> Active Schemes
+      </div>
+      <div class="nav-item" onclick="showSection('updates', this)">
+        <span class="nav-icon">🔔</span> Latest Updates
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" onclick="logout()">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div>
+          <div class="user-name" id="sidebarUsername">User</div>
+          <div class="user-role">Public User</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ─────────────────────────────────────── -->
+  <main class="main-content">
+    <header class="header">
+      <div class="header-left">
+        <div class="header-title">Public Information Portal</div>
+        <span class="header-badge" style="background:linear-gradient(135deg,var(--green-india),#0d6b07)">Public</span>
+      </div>
+      <div class="header-right">
+        <button class="dark-toggle" onclick="toggleDark()" id="darkBtn">🌙</button>
+      </div>
+    </header>
+    <div class="tricolor-strip"></div>
+
+    <div class="page-body">
+
+      <!-- ── OVERVIEW SECTION ────────────────────────── -->
+      <div class="section active" id="section-overview">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Scheme Statistics</div>
+            <div class="page-subtitle">Government welfare scheme performance overview</div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card card-blue">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+              <div class="stat-value" id="pub-beneficiaries">—</div>
+              <div class="stat-label">Total Beneficiaries</div>
+            </div>
+          </div>
+          <div class="stat-card card-green">
+            <div class="stat-icon">📋</div>
+            <div class="stat-info">
+              <div class="stat-value" id="pub-schemes">—</div>
+              <div class="stat-label">Active Schemes</div>
+            </div>
+          </div>
+          <div class="stat-card card-orange">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+              <div class="stat-value" id="pub-enrollments">—</div>
+              <div class="stat-label">Total Enrollments</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card" style="max-width:500px;">
+          <div class="chart-title">Scheme Distribution</div>
+          <div class="chart-subtitle">Beneficiaries per scheme</div>
+          <div class="chart-canvas-wrap">
+            <canvas id="pubPieChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SCHEMES SECTION ──────────────────────────── -->
+      <div class="section" id="section-schemes">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Active Welfare Schemes</div>
+            <div class="page-subtitle">Government schemes currently enrolling beneficiaries</div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">All Schemes</div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Scheme Name</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Enrolled</th>
+                </tr>
+              </thead>
+              <tbody id="pubSchemeTableBody">
+                <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading…</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── UPDATES SECTION ──────────────────────────── -->
+      <div class="section" id="section-updates">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Latest System Updates</div>
+            <div class="page-subtitle">Recent activity in the welfare scheme management system</div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">Recent Activity Log</div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Activity</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="pubAuditBody">
+                <tr><td colspan="3"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading…</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="js/auth.js"></script>
+<script>
+  // Init user
+  const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
+  if (!user.username) { window.location.href = '/'; }
+  document.getElementById('sidebarUsername').textContent = user.username || 'User';
+  document.getElementById('userAvatar').textContent = (user.username || 'U')[0].toUpperCase();
+
+  // Dark mode
+  function toggleDark() {
+    const d = document.documentElement;
+    const on = d.getAttribute('data-theme') === 'dark';
+    d.setAttribute('data-theme', on ? 'light' : 'dark');
+    document.getElementById('darkBtn').textContent = on ? '🌙' : '☀️';
+    localStorage.setItem('sw_dark', on ? '' : '1');
+  }
+  if (localStorage.getItem('sw_dark')) {
+    document.documentElement.setAttribute('data-theme','dark');
+    document.getElementById('darkBtn').textContent = '☀️';
+  }
+
+  function showSection(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    if (el) el.classList.add('active');
+    if (id === 'schemes') loadPubSchemes();
+    if (id === 'updates') loadPubAudit();
+  }
+
+  const API = '';
+
+  async function loadStats() {
+    try {
+      const r = await fetch(API + '/api/dashboard/stats');
+      const j = await r.json();
+      if (j.success) {
+        document.getElementById('pub-beneficiaries').textContent = j.data.total_beneficiaries;
+        document.getElementById('pub-schemes').textContent = j.data.active_schemes;
+        document.getElementById('pub-enrollments').textContent = j.data.total_enrollments;
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  async function loadPieChart() {
+    try {
+      const r = await fetch(API + '/api/schemes/distribution');
+      const j = await r.json();
+      if (!j.success) return;
+      const data = j.data;
+      const colors = ['#0a1628','#FF9933','#138808','#3182ce','#e53e3e','#805ad5','#dd6b20','#38a169'];
+      new Chart(document.getElementById('pubPieChart'), {
+        type: 'doughnut',
+        data: {
+          labels: data.map(d => d.scheme_name),
+          datasets: [{ data: data.map(d => d.count || 1), backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } } } }
+      });
+    } catch(e) {}
+  }
+
+  async function loadPubSchemes() {
+    try {
+      const r = await fetch(API + '/api/schemes/all');
+      const j = await r.json();
+      const tbody = document.getElementById('pubSchemeTableBody');
+      if (!j.success || !j.data.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📋</div><p>No schemes found</p></div></td></tr>'; return; }
+      tbody.innerHTML = j.data.map((s, i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td>${s.scheme_name}</td>
+          <td><span class="badge badge-info">${s.category}</span></td>
+          <td><span class="badge ${s.is_active ? 'badge-success' : 'badge-neutral'}">${s.is_active ? 'Active' : 'Inactive'}</span></td>
+          <td>${s.enrolled_count}</td>
+        </tr>`).join('');
+    } catch(e) {}
+  }
+
+  async function loadPubAudit() {
+    try {
+      const r = await fetch(API + '/api/audit/all');
+      const j = await r.json();
+      const tbody = document.getElementById('pubAuditBody');
+      if (!j.success || !j.data.length) { tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state"><p>No logs</p></div></td></tr>'; return; }
+      tbody.innerHTML = j.data.slice(0,20).map((l,i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td>${l.action_description}</td>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;">${new Date(l.created_at).toLocaleString('en-IN')}</td>
+        </tr>`).join('');
+    } catch(e) {}
+  }
+
+  function logout() {
+    localStorage.removeItem('sw_token');
+    localStorage.removeItem('sw_user');
+    window.location.href = '/';
+  }
+
+  // Init
+  loadStats();
+  loadPieChart();
+</script>
+</body>
+</html>
