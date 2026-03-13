@@ -1,7 +1,3 @@
-// ============================================================
-// SCHEMEWISE — Main Express Server
-// ============================================================
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -15,21 +11,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, '../frontend')));
-
-// ── Routes ──────────────────────────────────────────────────
-app.use('/api/auth',         require('./routes/auth'));
-app.use('/api/beneficiaries',require('./routes/beneficiaries'));
-app.use('/api/schemes',      require('./routes/schemes'));
-app.use('/api/dashboard',    require('./routes/dashboard'));
-app.use('/api/alerts',       require('./routes/alerts'));
-app.use('/api/audit',        require('./routes/audit'));
+// ── API Routes ──────────────────────────────────────────────
+app.use('/api/auth',          require('./routes/auth'));
+app.use('/api/beneficiaries', require('./routes/beneficiaries'));
+app.use('/api/schemes',       require('./routes/schemes'));
+app.use('/api/dashboard',     require('./routes/dashboard'));
+app.use('/api/alerts',        require('./routes/alerts'));
+app.use('/api/audit',         require('./routes/audit'));
 
 // ── Serve frontend HTML pages ────────────────────────────────
-app.get('/',        (req, res) => res.sendFile(path.join(__dirname, '../frontend/login.html')));
-app.get('/admin',   (req, res) => res.sendFile(path.join(__dirname, '../frontend/admin.html')));
+app.get('/',         (req, res) => res.sendFile(path.join(__dirname, '../frontend/login.html')));
+app.get('/admin',    (req, res) => res.sendFile(path.join(__dirname, '../frontend/admin.html')));
 app.get('/dashboard',(req, res) => res.sendFile(path.join(__dirname, '../frontend/index.html')));
+
+// ── Static files (CSS, JS, images) — MUST be after page routes
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // ── 404 handler ─────────────────────────────────────────────
 app.use((req, res) => {
