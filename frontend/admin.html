@@ -6,17 +6,40 @@
   <title>SCHEMEWISE — Admin Dashboard</title>
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .sidebar-nav a.nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary, #e2e8f0) !important;
+      text-decoration: none !important;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin-bottom: 2px;
+    }
+    .sidebar-nav a.nav-item:hover {
+      background: var(--nav-hover, rgba(255,255,255,0.06));
+      color: var(--text-primary, #fff) !important;
+    }
+    .sidebar-nav a.nav-item.active {
+      background: var(--nav-active, rgba(255,153,51,0.15));
+      color: var(--saffron, #FF9933) !important;
+    }
+  </style>
 </head>
 <body>
 
 <div class="app-layout" id="appLayout">
 
-  <!-- ── SIDEBAR ─────────────────────────────────────────── -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
       <div class="brand-icon">
-  <img src="images/emblem.png" alt="Emblem" style="width:30px;height:30px;object-fit:contain;" />
-</div>
+        <img src="images/emblem.png" alt="Emblem" style="width:30px;height:30px;object-fit:contain;" />
+      </div>
       <div class="brand-text">
         <div class="brand-name">SCHEMEWISE</div>
         <div class="brand-sub">Admin Portal</div>
@@ -42,6 +65,10 @@
       <div class="nav-item" onclick="showSection('audit', this)">
         <span class="nav-icon">📝</span> Audit Logs
       </div>
+
+      <a href="/ml" class="nav-item" style="color:var(--text-primary,#e2e8f0);">
+        <span class="nav-icon">🔍</span> Scheme Analysis
+      </a>
     </nav>
 
     <div class="sidebar-footer">
@@ -55,10 +82,8 @@
     </div>
   </aside>
 
-  <!-- ── MAIN CONTENT ─────────────────────────────────────── -->
   <main class="main-content">
 
-    <!-- Header -->
     <header class="header">
       <div class="header-left">
         <div class="header-title" id="pageHeading">Dashboard Overview</div>
@@ -70,8 +95,6 @@
           <span class="notif-badge" id="notifCount">0</span>
         </button>
         <button class="dark-toggle" onclick="toggleDark()" id="darkBtn">🌙</button>
-
-        <!-- Notification dropdown -->
         <div class="notif-dropdown" id="notifDropdown">
           <div class="notif-header-row">
             Notifications
@@ -87,13 +110,11 @@
       </div>
     </header>
 
-    <!-- Tricolor strip -->
     <div class="tricolor-strip"></div>
 
-    <!-- Page Body -->
     <div class="page-body">
 
-      <!-- ── DASHBOARD SECTION ──────────────────────────── -->
+      <!-- DASHBOARD SECTION -->
       <div class="section active" id="section-dashboard">
         <div class="page-header">
           <div>
@@ -103,12 +124,11 @@
           <button class="btn btn-secondary btn-sm" onclick="refreshDashboard()">🔄 Refresh</button>
         </div>
 
-        <!-- Stats grid -->
         <div class="stats-grid" id="statsGrid">
           <div class="stat-card card-blue">
             <div class="stat-icon">👥</div>
             <div class="stat-info">
-              <div class="stat-value skeleton sk-line narrow" id="stat-beneficiaries" style="width:60px;height:32px;"></div>
+              <div class="stat-value" id="stat-beneficiaries">—</div>
               <div class="stat-label">Total Beneficiaries</div>
               <div class="stat-trend">↑ Active in system</div>
             </div>
@@ -141,7 +161,6 @@
           </div>
         </div>
 
-        <!-- Charts -->
         <div class="charts-grid">
           <div class="chart-card">
             <div class="chart-title">Scheme Distribution</div>
@@ -160,7 +179,7 @@
         </div>
       </div>
 
-      <!-- ── BENEFICIARIES SECTION ────────────────────── -->
+      <!-- BENEFICIARIES SECTION -->
       <div class="section" id="section-beneficiaries">
         <div class="page-header">
           <div>
@@ -202,7 +221,7 @@
         </div>
       </div>
 
-      <!-- ── SCHEMES SECTION ──────────────────────────── -->
+      <!-- SCHEMES SECTION -->
       <div class="section" id="section-schemes">
         <div class="page-header">
           <div>
@@ -236,7 +255,7 @@
         </div>
       </div>
 
-      <!-- ── COMPLIANCE SECTION ───────────────────────── -->
+      <!-- COMPLIANCE SECTION -->
       <div class="section" id="section-compliance">
         <div class="page-header">
           <div>
@@ -274,7 +293,7 @@
         </div>
       </div>
 
-      <!-- ── AUDIT LOG SECTION ────────────────────────── -->
+      <!-- AUDIT LOG SECTION -->
       <div class="section" id="section-audit">
         <div class="page-header">
           <div>
@@ -306,11 +325,11 @@
         </div>
       </div>
 
-    </div><!-- end page-body -->
+    </div>
   </main>
 </div>
 
-<!-- ── MODAL: Add Beneficiary ───────────────────────────── -->
+<!-- MODAL: Add Beneficiary -->
 <div class="modal-overlay" id="addBenModal">
   <div class="modal">
     <div class="modal-header">
@@ -351,7 +370,7 @@
   </div>
 </div>
 
-<!-- ── MODAL: Enroll Beneficiary ────────────────────────── -->
+<!-- MODAL: Enroll Beneficiary -->
 <div class="modal-overlay" id="enrollModal">
   <div class="modal">
     <div class="modal-header">
@@ -380,11 +399,10 @@
   </div>
 </div>
 
-<!-- Toast container -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="js/auth.js"></script>
-<script src="js/dashboard.js"></script>
+<script src="js/admin.js"></script>
 <script src="js/beneficiaries.js"></script>
 </body>
 </html>

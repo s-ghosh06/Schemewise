@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- Animated login loader overlay -->
 <div class="login-loader" id="loginLoader">
   <div class="loader-spinner"></div>
   <div class="loader-text">Authenticating…</div>
@@ -18,59 +17,44 @@
   <div class="login-container">
     <div class="login-card">
 
-      <!-- Header -->
       <div class="login-header">
         <div class="login-emblem">
-          <img src="images/emblem.png" alt="Government of India Emblem" width="72" height="72" />
+          <img src="images/emblem.png" alt="Government of India Emblem" width="72" height="72" onerror="this.style.display='none'" />
         </div>
         <div class="login-title">SCHEMEWISE</div>
         <div class="login-subtitle">Government Scheme Monitoring System</div>
       </div>
 
-      <!-- Role tabs -->
       <div class="role-tabs">
-        <button class="role-tab active" onclick="setRole('admin', this)" id="tab-admin">
-          🏛 Administrator
-        </button>
-        <button class="role-tab" onclick="setRole('public', this)" id="tab-public">
-          👤 Public User
-        </button>
+        <button class="role-tab active" onclick="setRole('admin', this)">🏛 Administrator</button>
+        <button class="role-tab" onclick="setRole('public', this)">👤 Public User</button>
       </div>
 
-      <!-- Error message -->
       <div class="error-msg" id="errorMsg">Invalid username or password. Please try again.</div>
 
-      <!-- Login form -->
       <div>
         <div class="form-group">
           <label class="form-label">Username</label>
           <input type="text" class="form-input" id="username" placeholder="Enter username" autocomplete="username" />
         </div>
-
         <div class="form-group">
           <label class="form-label">Password</label>
           <input type="password" class="form-input" id="password" placeholder="Enter password" autocomplete="current-password" />
         </div>
-
-        <button class="btn-login" onclick="handleLogin()">
-          Sign In to Portal
-        </button>
+        <button class="btn-login" onclick="handleLogin()">Sign In to Portal</button>
       </div>
 
       <div class="login-footer">
         <strong>Demo Credentials:</strong><br/>
         Admin: <code>admin / admin123</code> &nbsp;|&nbsp; Public: <code>citizen1 / public123</code>
       </div>
-    </div>
 
-    <!-- Tricolor strip below card -->
-    <div class="tricolor-strip" style="border-radius: 0 0 8px 8px; margin-top: -8px;"></div>
+    </div>
+    <div class="tricolor-strip" style="border-radius:0 0 8px 8px;margin-top:-8px;"></div>
   </div>
 </div>
 
-<!-- Toast container -->
 <div class="toast-container" id="toastContainer"></div>
-
 <script src="js/auth.js"></script>
 </body>
 </html>
