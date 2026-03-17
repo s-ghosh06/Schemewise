@@ -322,4 +322,46 @@ document.addEventListener('DOMContentLoaded', () => {
   loadStats();
   loadNotifications();
   loadCharts();
+
+  // Handle hash navigation from ml.html
+  const hash = window.location.hash.replace('#', '');
+  if (hash && document.getElementById('section-' + hash)) {
+
+    // Show correct section
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-' + hash).classList.add('active');
+
+    // Update page heading
+    const titles = {
+      dashboard:     'Dashboard Overview',
+      beneficiaries: 'Beneficiary Management',
+      schemes:       'Welfare Schemes',
+      compliance:    'Compliance Alerts',
+      audit:         'System Audit Log'
+    };
+    document.getElementById('pageHeading').textContent = titles[hash] || '';
+
+    // Load section data
+    if (hash === 'beneficiaries') loadBeneficiaries();
+    if (hash === 'schemes')       loadSchemes();
+    if (hash === 'compliance')    loadAlerts();
+    if (hash === 'audit')         loadAuditLogs();
+
+    // Highlight correct nav item AFTER a small delay
+    setTimeout(() => {
+      document.querySelectorAll('.nav-item').forEach(n => {
+        n.classList.remove('active');
+        const text = n.textContent.trim().toLowerCase();
+        if (
+          (hash === 'dashboard'     && text.includes('dashboard'))     ||
+          (hash === 'beneficiaries' && text.includes('beneficiar'))    ||
+          (hash === 'schemes'       && text.includes('schemes'))       ||
+          (hash === 'compliance'    && text.includes('compliance'))    ||
+          (hash === 'audit'         && text.includes('audit'))
+        ) {
+          n.classList.add('active');
+        }
+      });
+    }, 50);
+  }
 });

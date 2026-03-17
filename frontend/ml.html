@@ -101,27 +101,28 @@
     </div>
 
     <nav class="sidebar-nav">
-      <div class="nav-section-label">Main Menu</div>
-      <a href="/admin" class="nav-item">
-        <span class="nav-icon">📊</span> Dashboard
-      </a>
-      <a href="/admin" class="nav-item">
-        <span class="nav-icon">👥</span> Beneficiaries
-      </a>
-      <a href="/admin" class="nav-item">
-        <span class="nav-icon">📋</span> Schemes
-      </a>
-      <div class="nav-section-label">Monitoring</div>
-      <a href="/admin" class="nav-item">
-        <span class="nav-icon">⚠️</span> Compliance Alerts
-      </a>
-      <a href="/admin" class="nav-item">
-        <span class="nav-icon">📝</span> Audit Logs
-      </a>
-      <a href="/ml" class="nav-item active">
-        <span class="nav-icon">🔍</span> Scheme Analysis
-      </a>
-    </nav>
+  <div class="nav-section-label">Main Menu</div>
+  <div class="nav-item" onclick="window.location.href='/admin#dashboard'">
+    <span class="nav-icon">📊</span> Dashboard
+  </div>
+  <div class="nav-item" onclick="window.location.href='/admin#beneficiaries'">
+    <span class="nav-icon">👥</span> Beneficiaries
+  </div>
+  <div class="nav-item" onclick="window.location.href='/admin#schemes'">
+    <span class="nav-icon">📋</span> Schemes
+  </div>
+  <div class="nav-section-label">Monitoring</div>
+  <div class="nav-item" onclick="window.location.href='/admin#compliance'">
+    <span class="nav-icon">⚠️</span> Compliance Alerts
+  </div>
+  <div class="nav-item" onclick="window.location.href='/admin#audit'">
+    <span class="nav-icon">📝</span> Audit Logs
+  </div>
+  <div class="nav-item active">
+    <span class="nav-icon">🔍</span> Scheme Analysis
+  </div>
+</nav>
+
 
     <div class="sidebar-footer">
       <div class="user-info" onclick="logout()">
