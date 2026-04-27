@@ -5,6 +5,19 @@
 
 CREATE DATABASE IF NOT EXISTS schemewise_db;
 USE schemewise_db;
+SHOW TABLES;
+
+DESC users;
+DESC beneficiaries;
+DESC schemes;
+DESC enrollments;
+DESC alerts;
+
+SELECT * FROM users;
+SELECT * FROM beneficiaries;
+SELECT * FROM schemes;
+SELECT * FROM enrollments;
+SELECT * FROM alerts;
 
 CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
