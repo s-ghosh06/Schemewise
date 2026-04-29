@@ -19,6 +19,16 @@ SELECT * FROM schemes;
 SELECT * FROM enrollments;
 SELECT * FROM alerts;
 
+SELECT b.full_name, s.scheme_name, e.status
+FROM beneficiaries b
+JOIN enrollments e ON b.beneficiary_id = e.beneficiary_id
+JOIN schemes s ON e.scheme_id = s.scheme_id;
+
+SELECT b.full_name, s.scheme_name, a.alert_type
+FROM alerts a
+JOIN beneficiaries b ON a.beneficiary_id = b.beneficiary_id
+JOIN schemes s ON a.scheme_id = s.scheme_id;
+
 CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
